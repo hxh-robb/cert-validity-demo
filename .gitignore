@@ -28,4 +28,3 @@
 .certs/
 *.tmp
 *.crt
-!consumer_expired.crt

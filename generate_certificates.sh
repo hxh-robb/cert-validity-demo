@@ -23,6 +23,7 @@ export DEMO="consumer"
 if [ ! -e "$DEMO.crt" ]; then
   openssl req -new -key $PRI_KEY -passin "$PASSWORD" -out "$DEMO.csr" -subj "/C=ph/ST=ncr/L=pasay/O=haocai/OU=it/CN=*.haocai.com"
   openssl x509 -req -in "$DEMO.csr" -days 7 -CA ca.crt -CAkey "$PRI_KEY" -passin "$PASSWORD" -CAcreateserial -out "$DEMO.crt"
+  faketime '2017-01-01 12:00:00' openssl x509 -req -in "$DEMO.csr" -days 7 -CA ca.crt -CAkey "$PRI_KEY" -passin "$PASSWORD" -CAcreateserial -out "$DEMO""_expired.crt"
 fi
 
 ## Copy ca.crt pem text to java code
@@ -47,4 +48,5 @@ cat "$JAVA"|sed -e "$LN_1,$LN_2""d" -e "$((LN_1-1))r /tmp/ca.crt.snippet" > "$JA
 mv "$JAVA"".tmp" "$JAVA"
 
 ## Copy consumer's certificate to resource directory
-cp .certs/"$DEMO.crt" src/main/resources
+cp .certs/$DEMO.crt src/main/resources
+cp .certs/"$DEMO""_expired.crt" src/main/resources
